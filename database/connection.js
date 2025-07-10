@@ -1,12 +1,9 @@
 import pkg from 'pg';
+import 'dotenv/config'
 const {Pool} = pkg
 
+
 export const pool =  new Pool({
- user: "postgres",
- host: "localhost",
- database: "unhogarmas",
- password: "postgres",
- port: 5432,
  allowExitOnIdle: true,
  })
 
