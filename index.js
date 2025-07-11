@@ -8,7 +8,7 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 app.use('/pets', petRouter)
-app.use('/users', petRouter)
+app.use('/users', userRouter)
 
 const PORT = process.env.PORT || 5000;
 
