@@ -13,8 +13,11 @@ const create = async (user) => {
 
 }
 
-const update = async () => {
+const updateUserProperty = async (userUpdated) => {
 
 }
+
+
+
 
 export const userModel = {findUser, create, update }
