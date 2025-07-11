@@ -5,9 +5,7 @@ const router = Router()
 
 
 
- router.get("/", async (req, res) => {
- 
- });
+ router.get("/", /*middleware*/ );
 
  router.get("/:id", async (req, res) => {
  
