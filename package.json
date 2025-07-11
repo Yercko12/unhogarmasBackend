@@ -4,9 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    ""
+
   },
   "repository": {
+    "dev": "nodemon index.js",
     "type": "git",
     "url": "git+https://github.com/Yercko12/unhogarmasBackend.git"
   },
@@ -22,5 +25,8 @@
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }
