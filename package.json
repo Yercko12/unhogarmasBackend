@@ -9,6 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
+    "dev": "nodemon index.js",
     "type": "git",
     "url": "git+https://github.com/Yercko12/unhogarmasBackend.git"
   },
