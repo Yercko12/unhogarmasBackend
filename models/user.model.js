@@ -13,9 +13,19 @@ const create = async (user) => {
 
 }
 
-const updateUserProperty = async (userUpdated) => {
+const update = async (id, updatedInfo) => {
+  const query = "UPDATE users SET first_name = $1, last_name = $2, email = $3 WHERE id = $4 RETURNING *";
 
-}
+  const values = [
+    updatedInfo.first_name,
+    updatedInfo.last_name,
+    updatedInfo.email,
+    id
+  ];
+
+  const { rows } = await pool.query(query, values);
+  return rows[0]; // Devuelve el usuario actualizado
+};
 
 
 

@@ -56,6 +56,13 @@ const findById = async (id) => {
     return rows[0]
 }
 
+const findByUser = async (userId) => {
+  const query = " SELECT * FROM pets WHERE author_post = $1 ORDER BY created_at DESC";
+  const { rows } = await pool.query(query, [userId]);
+  return rows; 
+};
+
+
 const create = async (pet, userid) => {
     const query = "Insert into pets (name, breed, age, gender, chip, photo, description, author_post) values ($1, $2, $3, $4, $5, $6, $7) returning *"
     const { rows } = await pool.query(query, [pet.name, pet.breed, pet.age, pet.gender, pet.chip, pet.photo, pet.description, userid])
@@ -69,10 +76,28 @@ const remove = async (id) => {
 
 }
 
-const update = async () => {
+const update = async (petId, userId, updatedPet) => {
+  const query = "UPDATE pets SET name = $1, breed = $2, age = $3, weight = $4, gender = $5, chip = $6, photo = $7, description = $8 WHERE id = $9 AND author_post = $10 RETURNING *";
 
-}
+  const values = [
+    updatedPet.name,
+    updatedPet.breed,
+    updatedPet.age,
+    updatedPet.weight,
+    updatedPet.gender,
+    updatedPet.chip,
+    updatedPet.photo,
+    updatedPet.description,
+    petId,
+    userId 
+  ];
+
+  const { rows } = await pool.query(query, values);
+  return rows[0];
+};
+
+
 
 export const petModel = {
-    findAllPets, findById, create, remove, update
+    findAllPets, findById, create, remove, update, findByUser
 };
