@@ -113,7 +113,7 @@ const create = async (req, res) => {
 };
 
 //actualizar informacion del usuario 
-const update = async (req, res) => {//preguntar acerca punto 40 a 54//
+const update = async (req, res) => {
     const id = req.params.id;
     const userData = req.body;
 
@@ -135,4 +135,5 @@ export const userController = {
     create,
     update,
     register,
+    login,
 };

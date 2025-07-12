@@ -1,4 +1,7 @@
 /* import "dotenv/config"; */
+
+
+//modificar el middleware
 import jwt from "jsonwebtoken";
 
 export const authMiddleware = (req, res, next) => {

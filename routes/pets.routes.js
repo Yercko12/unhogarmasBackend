@@ -1,26 +1,31 @@
-import { petModel } from "../models/pet.model";
+import { authMiddleware } from "../middlewares/auth.middleware";
 import { Router } from "express";
 
 const router = Router()
 
 
-
- router.get("/", /*middleware*/ );
-
- router.get("/:id", async (req, res) => {
- 
- });
-
- router.post("/", async (req, res) => {
- 
- });
+//obtener todas las mascotas  
+ router.get("/",authMiddleware,petController.read);
 
 
- router.put("/:id", async (req, res) => {
- 
- });
+//Obtener mascotas por ID
+ router.get("/:id", petController.readById)
 
- router.delete("/:id", async (req, res) => {
- 
- });
+
+
+ //Crear una mascota
+ router.post("/",authMiddleware,petController.create)
+
+
+
+ //actualizar mascotas
+ router.put("/:id",authMiddleware,petController.update)
+
+
+
+//eliminar mascotas
+ router.delete("/:id",authMiddleware, petController.remove )
+
+
+
  export default router;

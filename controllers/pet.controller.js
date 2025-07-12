@@ -79,6 +79,7 @@ const update = async (req, res) => {
     return res.status(500).json({ message: "Error en el servidor" });
   }
 };
+
 //eliminar mascota
 const remove = async (req, res) => {
   const { id } = req.params;
