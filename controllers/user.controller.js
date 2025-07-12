@@ -16,12 +16,12 @@ const register = async (req, res) => {
     }
 
     try {
-        const userExist = await userModel.findByEmail(email);
+        const userExist = await userModel.findByEmail(email);//hablar con nico para agregarlo
         if (userExist) {
             return res.status(409).json({ message: 'El correo electrónico ya está en uso' });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(password, 5);
 
         const newUser = await userModel.create({
             firstName,
