@@ -15,7 +15,16 @@ VALUES
 ('Brisa', 1, 'gato', 2, 5, 'female', true, 'brisa.jpg', 'Independiente y silenciosa, ideal para adultos.');
 
 
-CREATE TABLE users (id SERIAL PRIMARY KEY, first_name VARCHAR(50) NOT NULL, last_name VARCHAR(50) NOT NULL, rut VARCHAR(12) UNIQUE NOT NULL, email VARCHAR(100) UNIQUE NOT NULL, password VARCHAR(255) NOT NULL, photo VARCHAR(255), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE users (id SERIAL PRIMARY KEY, first_name VARCHAR(50) NOT NULL, last_name VARCHAR(50) NOT NULL, rut VARCHAR(12) UNIQUE NOT NULL, email VARCHAR(100) UNIQUE NOT NULL, password VARCHAR(255) NOT NULL, photo VARCHAR(255), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, role VARCHAR(20) DEFAULT 'usuario' CHECK (role IN ('usuario', 'administrador')));
+
+INSERT INTO users (first_name, last_name, rut, email, password, photo, role)
+VALUES 
+('Camila', 'Rodríguez', '12345678-9', 'camila@example.com', 'hashed_pass1', 'camila.jpg', 'usuario'),
+('Javier', 'Fuentes', '22345678-5', 'javier@example.com', 'hashed_pass2', 'javier.jpg', 'usuario'),
+('Sofía', 'Navarro', '32345678-1', 'sofia@example.com', 'hashed_pass3', 'sofia.jpg', 'usuario'),
+('Esteban', 'Leiva', '42345678-0', 'esteban@example.com', 'hashed_pass4', 'esteban.jpg', 'usuario'),
+('Valentina', 'Salas', '52345678-3', 'valentina.admin@hogarmas.cl', 'hashed_admin_pass', 'valentina.jpg', 'administrador');
+
 
 CREATE TABLE request ( id SERIAL PRIMARY KEY, age INT NOT NULL,  phone VARCHAR(20) NOT NULL, address VARCHAR(255) NOT NULL, housing_type VARCHAR(50), allows_pets BOOLEAN NOT NULL, pet_name VARCHAR(100), reason TEXT, household VARCHAR(100), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, user_id INT REFERENCES users(id), status VARCHAR(10) CHECK (status IN ('pendiente', 'aceptada')) DEFAULT 'pendiente'
 );
