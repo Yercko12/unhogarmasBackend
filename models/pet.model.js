@@ -1,47 +1,59 @@
 import { pool } from '../database/connection.js'
-
 import format from 'pg-format';
 
-const findAllPets = async ({ limit = 8, species, size, age }) => {
-  let baseQuery = 'SELECT * FROM pets WHERE true';
-  const conditions = [];
-  const values = [];
+const BASE_URL =
+  process.env.NODE_ENV === 'production'
+    ? process.env.DOMAIN_URL_APP
+    : `http://localhost:${process.env.PORT}`;
 
-  if (species) {
-    conditions.push(format('species = %L', species));
+const findAllPets = async ({ limit = 8, page = 1, species, size, age }) => {
+
+  let countQuery = 'SELECT COUNT(*) FROM pets WHERE true';
+  const countConditions = [];
+
+  if (species) countConditions.push(format('species = %L', species));
+  if (size === '1kg-5kg') countConditions.push('weight BETWEEN 1 AND 5');
+  if (size === '5kg-10kg') countConditions.push('weight BETWEEN 5 AND 10');
+  if (size === '+10kg') countConditions.push('weight > 10');
+  if (age === 'menos de 1 año') countConditions.push('age < 1');
+  if (age === '1 a 3 años') countConditions.push('age BETWEEN 1 AND 3');
+  if (age === 'más de 4 años') countConditions.push('age > 4');
+
+  if (countConditions.length > 0) {
+    countQuery += ' AND ' + countConditions.join(' AND ');
   }
 
-
-  if (size) {
-    if (size === '1kg-5kg') {
-      conditions.push('weight BETWEEN 1 AND 5');
-    } else if (size === '5kg-10kg') {
-      conditions.push('weight BETWEEN 5 AND 10');
-    } else if (size === '+10kg') {
-      conditions.push('weight > 10');
-    }
-  }
+  const { rows: countResult } = await pool.query(countQuery);
+  const total_rows = parseInt(countResult[0].count, 10);
+  const total_pages = Math.ceil(total_rows / limit);
+  const offset = (page - 1) * limit;
 
 
-  if (age) {
-    if (age === 'menos de 1 año') {
-      conditions.push('age < 1');
-    } else if (age === '1 a 3 años') {
-      conditions.push('age BETWEEN 1 AND 3');
-    } else if (age === 'más de 4 años') {
-      conditions.push('age > 4');
-    }
-  }
+  let query = 'SELECT * FROM pets WHERE true';
+  const conditions = [...countConditions]; 
 
- 
   if (conditions.length > 0) {
-    baseQuery += ' AND ' + conditions.join(' AND ');
+    query += ' AND ' + conditions.join(' AND ');
   }
 
-  baseQuery += format(' ORDER BY created_at DESC LIMIT %L', limit);
+  query += format(' ORDER BY created_at DESC LIMIT %L OFFSET %L', limit, offset);
+  const { rows } = await pool.query(query);
 
-  const { rows } = await pool.query(baseQuery);
-  return rows;
+
+  const results = rows.map((row) => ({
+    ...row,
+    href: `${BASE_URL}/api/pets/${row.id}`,
+  }));
+
+
+  return {
+    results,
+    total_pages,
+    page,
+    limit,
+    next: page < total_pages ? `${BASE_URL}/api/pets?limit=${limit}&page=${page + 1}` : null,
+    previous: page > 1 ? `${BASE_URL}/api/pets?limit=${limit}&page=${page - 1}` : null,
+  };
 };
 
 
@@ -53,9 +65,9 @@ const findById = async (id) => {
 }
 
 const findByUser = async (userId) => {
-  const query = " SELECT * FROM pets WHERE author_post = $1 ORDER BY created_at DESC";
-  const { rows } = await pool.query(query, [userId]);
-  return rows; 
+    const query = " SELECT * FROM pets WHERE author_post = $1 ORDER BY created_at DESC";
+    const { rows } = await pool.query(query, [userId]);
+    return rows;
 };
 
 
@@ -73,23 +85,23 @@ const remove = async (id) => {
 }
 
 const update = async (petId, userId, updatedPet) => {
-  const query = "UPDATE pets SET name = $1, breed = $2, age = $3, weight = $4, gender = $5, chip = $6, photo = $7, description = $8 WHERE id = $9 AND author_post = $10 RETURNING *";
+    const query = "UPDATE pets SET name = $1, breed = $2, age = $3, weight = $4, gender = $5, chip = $6, photo = $7, description = $8 WHERE id = $9 AND author_post = $10 RETURNING *";
 
-  const values = [
-    updatedPet.name,
-    updatedPet.breed,
-    updatedPet.age,
-    updatedPet.weight,
-    updatedPet.gender,
-    updatedPet.chip,
-    updatedPet.photo,
-    updatedPet.description,
-    petId,
-    userId 
-  ];
+    const values = [
+        updatedPet.name,
+        updatedPet.breed,
+        updatedPet.age,
+        updatedPet.weight,
+        updatedPet.gender,
+        updatedPet.chip,
+        updatedPet.photo,
+        updatedPet.description,
+        petId,
+        userId
+    ];
 
-  const { rows } = await pool.query(query, values);
-  return rows[0];
+    const { rows } = await pool.query(query, values);
+    return rows[0];
 };
 
 

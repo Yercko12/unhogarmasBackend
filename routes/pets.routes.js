@@ -5,11 +5,11 @@ const router = Router()
 
 
 //obtener todas las mascotas  
- router.get("/",authMiddleware,petController.read);
+ router.get("/", authMiddleware ,petController.read);
 
 
 //Obtener mascotas por ID
- router.get("/:id", petController.readById)
+ router.get("/:id",authMiddleware, petController.readById)
 
 
 

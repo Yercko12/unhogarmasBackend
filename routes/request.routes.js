@@ -7,7 +7,7 @@ const router = Router()
  router.get("/",authMiddleware,);
 
 
- router.get("/:id", )
+ router.get("/:id", authMiddleware)
 
 
 
