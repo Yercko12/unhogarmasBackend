@@ -1,27 +1,28 @@
-import { userModel } from "../models/user.model";
+import { userController } from "../controllers/user.controller";
 import { Router } from "express";
+
+
 
 const router = Router()
 
+//registra el usuario
+router.post("/register", userController.register);
 
- router.get("/", async (req, res) => {
- 
- });
+//login usuario
 
- router.get("/:id", async (req, res) => {
- 
- });
+router.post("/login", userController.login);
 
- router.post("/", async (req, res) => {
- 
- });
+//leer por medio del ID
+router.get("/",authMiddleware, userController.readById);
 
 
- router.put("/:id", async (req, res) => {
- 
- });
 
- router.delete("/:id", async (req, res) => {
- 
- });
- export default userRouter;
+router.get("/:id", userController.create);
+
+
+//actualizar el usuario
+router.put("/:id",authMiddleware, userController.update);
+
+
+
+export default userRouter;
