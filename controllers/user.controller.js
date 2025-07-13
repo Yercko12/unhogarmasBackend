@@ -15,8 +15,8 @@ const register = async (req, res) => {
         return res.status(400).json({ message: 'Todos los campos son requeridos' });
     }
 
-   
- try {
+
+    try {
         const userExist = await userModel.findByEmail(email);
         if (userExist) {
             return res.status(409).json({ message: 'El correo electrónico ya está en uso' });
@@ -68,17 +68,23 @@ const login = async (req, res) => {
 };
 
 
-
-
 //leer la informacion mediante el ID
-const readById = async (req, res) => {
-    const id = req.params.id;
+const getProfile = async (req, res) => {
+    const userId = req.user.id;
+
     try {
-        const user = await userModel.findUser(id);
+        const user = await userModel.findUser(userId);
         if (!user) {
             return res.status(404).json({ message: "No se pudo encontrar al usuario" });
         }
-        return res.json(user);
+        const { first_name, last_name, email, rut } = user;
+
+        return res.status(200).json({
+            first_name,
+            last_name,
+            email,
+            rut
+        });
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: "Error en el servidor" });
@@ -88,24 +94,30 @@ const readById = async (req, res) => {
 
 //actualizar informacion del usuario 
 const update = async (req, res) => {
-    const id = req.params.id;
-    const userData = req.body;
+    const userId = req.user.id;
+    const { first_name, last_name, email } = req.body;
+
+
+    if (!first_name && !last_name && !email) {
+        return res.status(400).json({ message: 'No se proporcionaron campos para actualizar' });
+    }
 
     try {
-        const updatedUser = await userModel.update(id, userData);
-        if (!updatedUser) {
-            return res.status(404).json({ message: "Usuario no encontrado" });
-        }
-        return res.json(updatedUser);
+        const updatedUser = await userModel.update(userId, { first_name, last_name, email });
+
+        return res.status(200).json({
+            message: 'Perfil actualizado con éxito',
+            user: updatedUser
+        });
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: "Error en el servidor" });
+        console.error('Error al actualizar perfil:', error);
+        return res.status(500).json({ message: 'Error en el servidor' });
     }
 }
 
 
 export const userController = {
-    readById,
+    getProfile,
     update,
     register,
     login,

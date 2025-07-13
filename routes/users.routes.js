@@ -15,12 +15,12 @@ userRouter.post("/register", userController.register);
 
 userRouter.post("/login", userController.login);
 
-//leer por medio del ID
-userRouter.get("/",authMiddleware, userController.readById);
+//mostrar mi usuario
+userRouter.get("/me",authMiddleware, userController.getProfile);
 
 
 //actualizar el usuario
-userRouter.put("/:id",authMiddleware, userController.update);
+userRouter.patch("/me",authMiddleware, userController.update);
 
 
 
