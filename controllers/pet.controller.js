@@ -1,6 +1,6 @@
 import { petModel } from "../models/pet.model.js";
 
-//lo que se vera en la pagina
+
 const read = async (req, res) => {
   try {
     const { page = 1, species, size, age } = req.query;
@@ -23,35 +23,47 @@ const read = async (req, res) => {
     return res.status(500).json({ message: "Error en el servidor" });
   }
 };
-//leer las mascotas por medio del ID
+
 const readById = async (req, res) => {
-  const { id } = req.params;
+
+  const petId = req.params.id;
+  const userId = req.user?.id || null;
 
   try {
-    const pet = await petModel.findById(id);
+    const pet = await findById(petId);
+
     if (!pet) {
-      return res.status(404).json({ message: "Mascota no encontrada" });
+      return res.status(404).json({ message: 'Mascota no encontrada' });
     }
-    return res.json(pet);
+
+    // Verificación: ¿Es el dueño?
+    const isOwner = userId && pet.author_post === userId;
+
+    return res.status(200).json({
+      ...pet,
+      isOwner,
+      href: `${BASE_URL}/api/pets/${pet.id}`,
+    });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Error en el servidor" });
+    console.error('Error en readById:', error);
+    return res.status(500).json({ message: 'Error al obtener la mascota' });
   }
 };
 
 
 //mostrar usuarios que el publico
 const readByUser = async (req, res) => {
-  const { id } = req.params;
+  const userId = req.user.id;
+
   try {
-    const myPets = await petModel.findByUser(id);
-    if (!myPets) {
-      return res.status(404).json({ message: "Mascota no encontrada" });
-    }
-    return res.json(pet);
+    const myPets = await petModel.findByUser(userId);
+      return res.status(200).json({
+      count: myPets.length,
+      results: myPets,
+    });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Error en el servidor" });
+    console.error('Error en readByUser:', error);
+    return res.status(500).json({ message: 'Error al obtener mascotas del usuario' });
   }
 };
 
