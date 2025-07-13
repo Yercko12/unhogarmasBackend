@@ -19,10 +19,6 @@ userRouter.post("/login", userController.login);
 userRouter.get("/",authMiddleware, userController.readById);
 
 
-
-userRouter.get("/:id", userController.create);
-
-
 //actualizar el usuario
 userRouter.put("/:id",authMiddleware, userController.update);
 

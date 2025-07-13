@@ -6,14 +6,16 @@ const router = Router()
 
 
 //obtener todas las mascotas  
- router.get("/", authMiddleware ,petController.read);
 router.get("/", authMiddleware, petController.read);
 
 
+
 //Obtener mascotas por ID
- router.get("/:id",authMiddleware, petController.readById)
+router.get("/:id", authMiddleware, petController.readById)
 
 
+//Obtener por medio del usuario
+router.get("/:id", authMiddleware, petController.readByUser)
 
 //Crear una mascota
 router.post("/", authMiddleware, petController.create)

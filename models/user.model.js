@@ -5,7 +5,7 @@ const findUser = async (id) => {
     const {rows} = await pool.query(query, [id])
     return rows[0]
 } 
-
+/* const  findByEmail = */
 const create = async (user) => {
     const query = "Insert into users (firstName, lastName, email, rut, photo, userRole) values $1, $2, $3, $4, $5, $6 returning *"
     const {rows} = await pool.query(query, [user.name, user.lastName, user.email, user.rut, user.photo, user.role])

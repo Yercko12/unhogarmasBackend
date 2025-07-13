@@ -2,7 +2,7 @@ import { petModel } from "../models/pet.model.js";
 
 //lo que se vera en la pagina
 const read = async (req, res) => {
-  const { limit = 8, order = "ASC", page = 1 } = req.query;
+  const { page = 1 } = req.query; //revisar
   const isPageValid = /^[1-9]\d*$/.test(page);
 
   if (!isPageValid) {
@@ -10,9 +10,7 @@ const read = async (req, res) => {
   }
 
   try {
-    const pets = await petModel.findAll({
-      limit,
-      order,
+    const pets = await petModel.findAllPets({
       page,
       user: req.user,
     });
@@ -37,22 +35,45 @@ const readById = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
+//mostrar usuarios que el publico
+const readByUser = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const myPets = await petModel.findByUser(id);
+    if (!myPets) {
+      return res.status(404).json({ message: "Mascota no encontrada" });
+    }
+    return res.json(pet);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+
+
+
 //crear la mascota
 const create = async (req, res) => {
-  const { name, breed, age, gender, chip, photo, description } = req.body;
+  const { name, specie, weight, age, gender, chip, photo, description, author_post } = req.body;
 
-  if (!name || !breed || age || !gender || !chip || !photo || !description) {
+  if (!name || !specie || !weight || !age || !gender || !chip || !photo || !description) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
   const newPet = {
     name,
-    breed,
+    specie,
+    weight,
     age,
     gender,
     chip,
     photo,
     description,
+    author_post
   };
 
   try {
@@ -102,4 +123,5 @@ export const petController = {
   create,
   update,
   remove,
+  readByUser
 };

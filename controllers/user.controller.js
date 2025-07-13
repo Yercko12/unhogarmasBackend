@@ -15,13 +15,14 @@ const register = async (req, res) => {
         return res.status(400).json({ message: 'Todos los campos son requeridos' });
     }
 
-    try {
-        const userExist = await userModel.findByEmail(email);//hablar con nico para agregarlo
+   
+ try {
+        const userExist = await userModel.findByEmail(email);
         if (userExist) {
             return res.status(409).json({ message: 'El correo electrónico ya está en uso' });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 5);
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         const newUser = await userModel.create({
             firstName,
@@ -84,33 +85,6 @@ const readById = async (req, res) => {
     }
 };
 
-//crear usuario, datos que se solictan
-const create = async (req, res) => {
-    const { firstName, lastName, email, password, rut, photo } = req.body;
-    if (!firstName || !lastName || !email || !password || !rut) {
-        return res.status(400).json({ message: "Todos los campos son requeridos" });
-    }
-
-    try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        const newUser = {
-            firstName,
-            lastName,
-            email,
-            password: hashedPassword,
-            rut,
-            photo: photo,
-        };
-
-
-        const user = await userModel.create(newUser);
-        return res.status(201).json(user);
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: "Error en el servidor" });
-    }
-};
 
 //actualizar informacion del usuario 
 const update = async (req, res) => {
@@ -132,7 +106,6 @@ const update = async (req, res) => {
 
 export const userController = {
     readById,
-    create,
     update,
     register,
     login,
