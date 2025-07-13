@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "test": "jest"
+   "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "repository": {
     "dev": "nodemon index.js",
@@ -33,6 +33,7 @@
     "pg-format": "^1.0.4"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "supertest": "^7.1.3"
   }
 }

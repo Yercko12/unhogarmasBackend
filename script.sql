@@ -15,7 +15,7 @@ VALUES
 ('Brisa', 1, 'gato', 2, 5, 'female', true, 'brisa.jpg', 'Independiente y silenciosa, ideal para adultos.');
 
 
-CREATE TABLE users (id SERIAL PRIMARY KEY, first_name VARCHAR(50) NOT NULL, last_name VARCHAR(50) NOT NULL, rut VARCHAR(12) UNIQUE NOT NULL, email VARCHAR(100) UNIQUE NOT NULL, password VARCHAR(255) NOT NULL, photo VARCHAR(255), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, role VARCHAR(20) DEFAULT 'usuario' CHECK (role IN ('usuario', 'administrador')));
+CREATE TABLE users (id SERIAL PRIMARY KEY, first_name VARCHAR(50) NOT NULL, last_name VARCHAR(50) NOT NULL, rut VARCHAR(12) UNIQUE NOT NULL, email VARCHAR(100) UNIQUE NOT NULL, password VARCHAR(50) NOT NULL, photo VARCHAR(255), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, role VARCHAR(20) DEFAULT 'usuario' CHECK (role IN ('usuario', 'administrador')));
 
 INSERT INTO users (first_name, last_name, rut, email, password, photo, role)
 VALUES 

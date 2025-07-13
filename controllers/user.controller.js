@@ -9,9 +9,10 @@ const JWT_EXPIRES_IN = '1h';
 
 //Registro del usuario
 const register = async (req, res) => {
-    const { firstName, lastName, email, rut, password, photo } = req.body;
 
-    if (!firstName || !lastName || !email || !rut || !password) {
+    const { first_name, last_name, email, password, rut, photo } = req.body;
+
+    if (!first_name || !last_name || !email || !rut || !password) {
         return res.status(400).json({ message: 'Todos los campos son requeridos' });
     }
 
@@ -25,18 +26,21 @@ const register = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const newUser = await userModel.create({
-            firstName,
-            lastName,
+            first_name,
+            last_name,
             email,
             rut,
             photo,
-            password: hashedPassword,
+            password: hashedPassword
         });
 
         return res.status(201).json({ message: 'Usuario creado exitosamente', user: newUser });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: 'Error en el servidor' });
+        console.error('Error en el register:', error);
+        return res.status(500).json({
+            message: 'Error en el servidor',
+            error: error.message
+        });
     }
 };
 //login del usuario

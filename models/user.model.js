@@ -6,12 +6,18 @@ const findUser = async (id) => {
     const {rows} = await pool.query(query, [id])
     return rows[0]
 } 
-/* const  findByEmail = */
-const create = async (user) => {
-    const query = "Insert into users (firstName, lastName, email, rut, photo, userRole) values $1, $2, $3, $4, $5, $6 returning *"
-    const {rows} = await pool.query(query, [user.name, user.lastName, user.email, user.rut, user.photo, user.role])
-    return rows[0]
 
+const findByEmail = async (email) => {
+  const query = 'SELECT * FROM users WHERE email = $1';
+  const { rows } = await pool.query(query, [email]);
+  return rows[0]; 
+}
+
+
+const create = async (user) => {
+    const query = "Insert into users (first_name, last_name, email, rut, photo, password) values ($1, $2, $3, $4, $5, $6) returning *"
+    const {rows} = await pool.query(query, [user.first_name, user.last_name, user.email, user.rut, user.photo, user.password])
+    return rows[0];
 }
 
 const update = async (id, updatedFields) => {
@@ -40,4 +46,4 @@ const update = async (id, updatedFields) => {
 
 
 
-export const userModel = {findUser, create, update }
+export const userModel = {findUser, create, update, findByEmail }
