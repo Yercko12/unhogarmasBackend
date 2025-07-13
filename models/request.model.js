@@ -1,4 +1,4 @@
-import { pool } from '../database/connection.js'
+import { pool } from '../database/connection.js';
 
 const findAllRequest = async () =>{
     const query = "Select * from request";

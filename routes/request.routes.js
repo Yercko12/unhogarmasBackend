@@ -1,5 +1,6 @@
-import { authMiddleware } from "../middlewares/auth.middleware";
-import { Router } from "express";
+import { Router } from 'express';
+import { authMiddleware } from '../middlewares/auth.middleware.js';
+import { requestController } from '../controllers/request.controller.js';
 
 const router = Router()
 
@@ -15,11 +16,11 @@ const router = Router()
 
 
 
- router.put("/:id",authMiddleware,)
+ router.put("/:id",authMiddleware,requestController.updateStatus)
 
 
 
- router.delete("/:id",authMiddleware,  )
+ router.delete("/:id",authMiddleware, requestController.deleteRequest )
 
 
 
