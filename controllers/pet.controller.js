@@ -17,7 +17,7 @@ const read = async (req, res) => {
     return res.json(pets);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Error en el servidor" });
   }
 };
 //leer las mascotas por medio del ID
@@ -32,7 +32,7 @@ const readById = async (req, res) => {
     return res.json(pet);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Error en el servidor" });
   }
 };
 
@@ -48,7 +48,7 @@ const readByUser = async (req, res) => {
     return res.json(pet);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Error en el servidor" });
   }
 };
 
@@ -73,7 +73,7 @@ const create = async (req, res) => {
     chip,
     photo,
     description,
-    author_post
+    author_post:req.user.id
   };
 
   try {
@@ -81,7 +81,7 @@ const create = async (req, res) => {
     return res.status(201).json(createdPet);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Error en el servidor" });
   }
 };
 //actualizar perfil de la mascota
