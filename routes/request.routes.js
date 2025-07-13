@@ -5,7 +5,7 @@ import { requestController } from '../controllers/request.controller.js';
 const router = Router()
 
 
-router.get("/", authMiddleware,);
+router.get("/", authMiddleware, requestController.findRequest);
 
 router.post("/", authMiddleware, requestController.createRequest)
 
