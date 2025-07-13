@@ -1,6 +1,11 @@
 import { petModel } from "../models/pet.model.js";
 
+const BASE_URL =
+  process.env.NODE_ENV === 'production'
+    ? process.env.DOMAIN_URL_APP
+    : `http://localhost:${process.env.PORT}`;
 
+    
 const read = async (req, res) => {
   try {
     const { page = 1, species, size, age } = req.query;
@@ -30,7 +35,7 @@ const readById = async (req, res) => {
   const userId = req.user?.id || null;
 
   try {
-    const pet = await findById(petId);
+    const pet = await petModel.findById(petId);
 
     if (!pet) {
       return res.status(404).json({ message: 'Mascota no encontrada' });
