@@ -8,3 +8,4 @@ export const pool =  new Pool({
  allowExitOnIdle: true,
  })
 
+console.log("Database connected");

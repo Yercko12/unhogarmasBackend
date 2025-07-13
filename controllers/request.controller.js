@@ -1,4 +1,4 @@
-import { requestModel } from "../models/pet.model.js";
+import { requestModel } from "../models/request.model.js";
 
 // obtener todas las solicitudes
 const findRequest = async (req, res) => {

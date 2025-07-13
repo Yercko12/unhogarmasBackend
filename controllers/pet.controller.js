@@ -2,19 +2,22 @@ import { petModel } from "../models/pet.model.js";
 
 //lo que se vera en la pagina
 const read = async (req, res) => {
-  const { page = 1 } = req.query; //revisar
-  const isPageValid = /^[1-9]\d*$/.test(page);
-
-  if (!isPageValid) {
-    return res.status(400).json({ message: "Invalid page number, page > 0" });
-  }
-
   try {
-    const pets = await petModel.findAllPets({
-      page,
-      user: req.user,
-    });
-    return res.json(pets);
+    const { page = 1, species, size, age } = req.query;
+    const isPageValid = /^[1-9]\d*$/.test(page);
+    const filters = { page: Number(page), };
+
+    if (species) filters.species = species;
+    if (size) filters.size = size;
+    if (age) filters.age = age;
+
+    if (!isPageValid) {
+      return res.status(400).json({ message: "Invalid page number, page > 0" });
+    }
+
+
+    const pets = await petModel.findAllPets(filters);
+    return res.status(200).json(pets);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Error en el servidor" });
@@ -73,7 +76,7 @@ const create = async (req, res) => {
     chip,
     photo,
     description,
-    author_post:req.user.id
+    author_post: req.user.id
   };
 
   try {
