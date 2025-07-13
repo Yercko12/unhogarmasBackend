@@ -17,8 +17,8 @@ router.get("/myPets", authMiddleware, petController.readByUser)
 //Crear una mascota
 router.post("/", authMiddleware, petController.create)
 
-//actualizar mascotas
-router.put("/:id", authMiddleware, petController.update)
+//actualizar mascotas   
+router.patch('/:id', authMiddleware, petController.update);
 
 //eliminar mascotas
 router.delete("/:id", authMiddleware, petController.remove)

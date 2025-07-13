@@ -57,7 +57,7 @@ const readByUser = async (req, res) => {
 
   try {
     const myPets = await petModel.findByUser(userId);
-      return res.status(200).json({
+    return res.status(200).json({
       count: myPets.length,
       results: myPets,
     });
@@ -73,7 +73,7 @@ const readByUser = async (req, res) => {
 
 //crear la mascota
 const create = async (req, res) => {
-  const { name, specie, weight, age, gender, chip, photo, description} = req.body;
+  const { name, specie, weight, age, gender, chip, photo, description } = req.body;
 
   if (!name || !specie || !weight || !age || !gender || !chip || !photo || !description) {
     return res.status(400).json({ message: "Faltan campos requeridos" });
@@ -89,43 +89,72 @@ const create = async (req, res) => {
     photo,
   };
 
-  try {newPet = await petModel.create(petData, req.user.id);
+  try {
+    newPet = await petModel.create(petData, req.user.id);
     return res.status(201).json(createdPet);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Error en el servidor" });
   }
 };
-//actualizar perfil de la mascota
+
 const update = async (req, res) => {
-  const { id } = req.params;
-  const updateData = req.body;
+  const petId = req.params.id;
+  const userId = req.user.id;
+  const updatedFields = req.body;
 
   try {
-    const updatedPet = await petModel.update(id, updateData);
-    if (!updatedPet) {
-      return res.status(404).json({ message: "Mascota no encontrada" });
+    //Verificar si existe la mascota
+    const pet = await petModel.findById(petId);
+    if (!pet) {
+      return res.status(404).json({ message: 'Mascota no encontrada' });
     }
-    return res.json(updatedPet);
+
+    //Verificar propiedad
+    if (pet.author_post !== userId) {
+      return res.status(403).json({ message: 'No tienes permiso para editar esta publicación' });
+    }
+
+    //Actualizar la mascota
+    const updatedPet = await petModel.update(petId, userId, updatedFields);
+
+    return res.status(200).json({
+      message: 'Mascota actualizada con éxito',
+      pet: updatedPet
+    });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Error en el servidor" });
+    console.error('Error al actualizar mascota:', error);
+    return res.status(500).json({ message: 'Error en el servidor' });
   }
 };
 
-//eliminar mascota
-const remove = async (req, res) => {
-  const { id } = req.params;
 
-  try {
-    const deletedPet = await petModel.remove(id);
-    if (!deletedPet) {
-      return res.status(404).json({ message: "Mascota no encontrada" });
+const remove = async (req, res) => {
+  const petId = req.params.id;
+  const userId = req.user.id;
+
+try {
+    // Verificar si la mascota existe
+    const pet = await petModel.findById(petId);
+    if (!pet) {
+      return res.status(404).json({ message: 'Mascota no encontrada' });
     }
-    return res.json({ message: "Mascota eliminada" });
+
+    // Verificar si el usuario es el dueño
+    if (pet.author_post !== userId) {
+      return res.status(403).json({ message: 'No tienes permiso para eliminar esta publicación' });
+    }
+
+    // Eliminar la mascota
+    const deletedPet = await petModel.remove(petId);
+
+    return res.status(200).json({
+      message: 'Mascota eliminada con éxito',
+      pet: deletedPet
+    });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Error en el servidor" });
+    console.error('Error al eliminar mascota:', error);
+    return res.status(500).json({ message: 'Error en el servidor' });
   }
 };
 
