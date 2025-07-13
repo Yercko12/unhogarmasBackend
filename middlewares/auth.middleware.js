@@ -1,23 +1,23 @@
 import jwt from 'jsonwebtoken';
 
- export const authMiddleware = (req, res, next) => {
-    
+export const authMiddleware = (req, res, next) => {
+
     const authHeader = req.headers.authorization;
-
-    if (!authHeader)
+    if (!authHeader?.startsWith('Bearer ')) {
         return res.status(401).json({ message: 'Token no proporcionado' });
+    }
 
-    const [scheme, token] = authHeader.split(' ');
-
-    if (scheme !== 'Bearer' || !token)
-        return res.status(401).json({ message: 'Formato de token inválido' });
+    const token = authHeader.split(' ')[1];
 
     try {
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = payload;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = {
+            id: decoded.id,
+            email: decoded.email,
+            role: decoded.role 
+        };
         next();
-    } catch (err) {
-        console.error(err);
-        return res.status(401).json({ message: 'Token inválido o expirado' });
+    } catch (error) {
+        return res.status(403).json({ message: 'Token inválido' });
     }
 };

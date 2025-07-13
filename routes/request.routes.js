@@ -5,23 +5,14 @@ import { requestController } from '../controllers/request.controller.js';
 const router = Router()
 
 
- router.get("/",authMiddleware,);
+router.get("/", authMiddleware,);
 
+router.post("/", authMiddleware, requestController.createRequest)
 
- router.get("/:id", authMiddleware)
+router.patch("/:id", authMiddleware, requestController.updateStatus)
 
-
-
- router.post("/",authMiddleware,)
-
-
-
- router.put("/:id",authMiddleware,requestController.updateStatus)
+router.delete('/:id', authMiddleware, requestController.deleteRequest);
 
 
 
- router.delete("/:id",authMiddleware, requestController.deleteRequest )
-
-
-
- export default router;
+export default router;

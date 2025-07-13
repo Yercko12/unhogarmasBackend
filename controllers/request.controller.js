@@ -1,70 +1,123 @@
 import { requestModel } from "../models/request.model.js";
 
-// obtener todas las solicitudes
+
 const findRequest = async (req, res) => {
+  const userRole = req.user.role; // Asignado por authMiddleware
+
+  if (userRole !== 'admin') {
+    return res.status(403).json({ message: 'Acceso denegado: solo el administrador puede ver solicitudes' });
+  }
+
   try {
     const requests = await requestModel.findAllRequest();
-    res.status(200).json(requests);
+    return res.status(200).json({ results: requests });
   } catch (error) {
-    console.error('Error al obtener las solicitudes:', error);
-    res.status(500).json({ message: 'Error del servidor' });
+    console.error('Error al obtener solicitudes:', error);
+    return res.status(500).json({ message: 'Error en el servidor' });
   }
 };
 
-// crear una nueva solicitud
 const createRequest = async (req, res) => {
+  const userId = req.user.id;
+
+  const {
+    age,
+    phone,
+    address,
+    housing_type,
+    allows_pets,
+    pet_name,
+    reason,
+    household
+  } = req.body;
+
   try {
-    const newRequest = await requestModel.create(req.body);
-    res.status(201).json(newRequest);
+    const newRequest = await requestModel.create({
+      age,
+      phone,
+      address,
+      housing_type,
+      allows_pets,
+      pet_name,
+      reason,
+      household,
+      user_id: userId,
+      status: 'pendiente'
+    });
+
+    return res.status(201).json({
+      message: 'Solicitud enviada con éxito',
+      solicitud: newRequest
+    });
   } catch (error) {
-    console.error('Error al crear la solicitud:', error);
-    res.status(500).json({ message: 'Error del servidor' });
+    console.error('Error al crear solicitud:', error);
+    return res.status(500).json({ message: 'Error en el servidor' });
   }
 };
 
-// actualizar status de una solicitud por ID
 const updateStatus = async (req, res) => {
+
+  const userRole = req.user.role;
+  const { id } = req.params;
+  const { status } = req.body;
+  if (userRole !== 'admin') {
+    return res.status(403).json({ message: 'Solo el administrador puede modificar el estado de una solicitud' });
+  }
+
+  if (!status) {
+    return res.status(400).json({ message: 'Debes proporcionar el nuevo estado de la solicitud' });
+  }
+
   try {
-    const { id } = req.params;
-    const { status } = req.body;
+    const updated = await requestModel.update(id, status);
 
-    if (!status) {
-      return res.status(400).json({ message: 'El campo "status" es requerido en el body' });
+    if (!updated) {
+      return res.status(404).json({ message: 'Solicitud no encontrada o no modificada' });
     }
 
-    const updatedRequest = await requestModel.update(status, id);
+    return res.status(200).json({
+      message: 'Estado actualizado con éxito',
+      solicitud: updated
+    });
 
-    if (!updatedRequest) {
-      return res.status(404).json({ message: 'Solicitud no encontrada' });
-    }
 
-    res.status(200).json(updatedRequest);
   } catch (error) {
     console.error('Error al actualizar el status:', error);
     res.status(500).json({ message: 'Error del servidor' });
   }
-};
+}
+
 
 // Eliminar una solicitud
 const deleteRequest = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deletedRequest = await requestModel.remove(id);
+  const userRole = req.user.role;
+  const { id } = req.params;
 
-    if (!deletedRequest) {
+  if (userRole !== 'admin') {
+    return res.status(403).json({ message: 'Acceso denegado: solo el administrador puede eliminar solicitudes' });
+  }
+
+  try {
+    const request = await requestModel.findRequestById(id);
+    if (!request) {
       return res.status(404).json({ message: 'Solicitud no encontrada' });
     }
 
-    res.status(200).json({ message: 'Solicitud eliminada correctamente', deletedRequest });
+    const deleted = await requestModel.remove(id);
+
+    return res.status(200).json({
+      message: 'Solicitud eliminada con éxito',
+      solicitud: deleted
+    });
   } catch (error) {
-    console.error('Error al eliminar la solicitud:', error);
-    res.status(500).json({ message: 'Error del servidor' });
+    console.error('Error al eliminar solicitud:', error);
+    return res.status(500).json({ message: 'Error en el servidor' });
   }
 };
 
 export const requestController = {
-  createRequest, 
-  findRequest, 
-  deleteRequest, 
+  createRequest,
+  findRequest,
+  deleteRequest,
   updateStatus
 }
