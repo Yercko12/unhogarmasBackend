@@ -1,51 +1,47 @@
 import { pool } from '../database/connection.js'
 
+import format from 'pg-format';
+
 const findAllPets = async ({ limit = 8, species, size, age }) => {
-    let query = "SELECT * FROM pets WHERE 1=1";
-    const values = [];
-    let index = 1;
+  let baseQuery = 'SELECT * FROM pets WHERE true';
+  const conditions = [];
+  const values = [];
 
-    if (species) {
-        query += ` AND species = $${index++}`;
-        values.push(species);
+  if (species) {
+    conditions.push(format('species = %L', species));
+  }
+
+
+  if (size) {
+    if (size === '1kg-5kg') {
+      conditions.push('weight BETWEEN 1 AND 5');
+    } else if (size === '5kg-10kg') {
+      conditions.push('weight BETWEEN 5 AND 10');
+    } else if (size === '+10kg') {
+      conditions.push('weight > 10');
     }
+  }
 
-    if (size) {
-        if (size === '1kg-5kg') {
-            query += ` AND weight BETWEEN $${index} AND $${index + 1}`;
-            values.push(1, 5);
-            index += 2;
-        } else if (size === '5kg-10kg') {
-            query += ` AND weight BETWEEN $${index} AND $${index + 1}`;
-            values.push(5, 10);
-            index += 2;
-        } else if (size === '+10kg') {
-            query += ` AND weight > $${index}`;
-            values.push(10);
-            index++;
-        }
+
+  if (age) {
+    if (age === 'menos de 1 año') {
+      conditions.push('age < 1');
+    } else if (age === '1 a 3 años') {
+      conditions.push('age BETWEEN 1 AND 3');
+    } else if (age === 'más de 4 años') {
+      conditions.push('age > 4');
     }
+  }
 
-    if (age) {
-        if (age === 'menos de 1 año') {
-            query += ` AND age < $${index}`;
-            values.push(1);
-            index++;
-        } else if (age === '1 a 3 años') {
-            query += ` AND age BETWEEN $${index} AND $${index + 1}`;
-            values.push(1, 3);
-            index += 2;
-        } else if (age === 'más de 4 años') {
-            query += ` AND age > $${index}`;
-            values.push(4);
-            index++;
-        }
-    }
-    query += ` ORDER BY created_at DESC LIMIT $${index}`;
-    values.push(limit);
+ 
+  if (conditions.length > 0) {
+    baseQuery += ' AND ' + conditions.join(' AND ');
+  }
 
-    const { rows } = await pool.query(query, values);
-    return rows;
+  baseQuery += format(' ORDER BY created_at DESC LIMIT %L', limit);
+
+  const { rows } = await pool.query(baseQuery);
+  return rows;
 };
 
 
