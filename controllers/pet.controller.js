@@ -73,13 +73,13 @@ const readByUser = async (req, res) => {
 
 //crear la mascota
 const create = async (req, res) => {
-  const { name, specie, weight, age, gender, chip, photo, description, author_post } = req.body;
+  const { name, specie, weight, age, gender, chip, photo, description} = req.body;
 
   if (!name || !specie || !weight || !age || !gender || !chip || !photo || !description) {
-    return res.status(400).json({ message: "Missing required fields" });
+    return res.status(400).json({ message: "Faltan campos requeridos" });
   }
 
-  const newPet = {
+  const petData = {
     name,
     specie,
     weight,
@@ -87,12 +87,9 @@ const create = async (req, res) => {
     gender,
     chip,
     photo,
-    description,
-    author_post: req.user.id
   };
 
-  try {
-    const createdPet = await petModel.create(newPet);
+  try {newPet = await petModel.create(petData, req.user.id);
     return res.status(201).json(createdPet);
   } catch (error) {
     console.error(error);

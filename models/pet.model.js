@@ -71,9 +71,9 @@ const findByUser = async (userId) => {
 };
 
 
-const create = async (pet, userid) => {
-  const query = "Insert into pets (name, specie, weight, age, gender, chip, photo, description, author_post) values ($1, $2, $3, $4, $5, $6, $7, $8) returning *"
-  const { rows } = await pool.query(query, [pet.name, pet.specie, pet.weight, pet.age, pet.gender, pet.chip, pet.photo, pet.description, userid])
+const create = async (pet, userId) => {
+  const query = "Insert into pets (name, specie, weight, age, gender, chip, photo, description, author_post) values ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning *"
+  const { rows } = await pool.query(query, [pet.name, pet.specie, pet.weight, pet.age, pet.gender, pet.chip, pet.photo, pet.description, userId])
   return rows[0]
 }
 
