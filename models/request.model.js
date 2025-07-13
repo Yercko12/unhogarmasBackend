@@ -6,7 +6,6 @@ const findAllRequest = async () =>{
     return rows
 }
 
-
 const create = async (request) => {
     const query = "INSERT INTO adoption_requests (age, phone,  address,  housing_type, allows_pets, pet_name, reason, household,  user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning * "
     const {rows} =  await pool.query(query, [request.age, request.phone, request.address, request.housing_type, request.allows_pets, request.pet_name, request.reason, request.household, request.user_id])

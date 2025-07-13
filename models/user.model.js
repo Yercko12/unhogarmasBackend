@@ -24,7 +24,7 @@ const update = async (id, updatedInfo) => {
   ];
 
   const { rows } = await pool.query(query, values);
-  return rows[0]; // Devuelve el usuario actualizado
+  return rows[0]; 
 };
 
 
