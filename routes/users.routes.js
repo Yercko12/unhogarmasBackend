@@ -1,18 +1,17 @@
 import { userController } from "../controllers/user.controller.js";
 import {authMiddleware} from "../middlewares/auth.middleware.js";
 import { Router } from "express";
+import multer from 'multer'
 
+const upload = multer({ dest: 'uploads/' });
 const userRouter = Router();
 
 //registra el usuario
-userRouter.post("/register", userController.register);
+userRouter.post("/register",  upload.single('photo'), userController.register);
 
 //login usuario
 
 userRouter.post("/login", userController.login);
-
-//mostrar mi usuario
-userRouter.get("/me",authMiddleware, userController.getProfile);
 
 
 //actualizar el usuario

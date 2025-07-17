@@ -1,11 +1,6 @@
 import { pool } from "../database/connection.js";
 import format from "pg-format";
 
-const findUser = async (id) => {
-    const query = "select * from users where id = $1";
-    const {rows} = await pool.query(query, [id])
-    return rows[0]
-} 
 
 const findByEmail = async (email) => {
   const query = 'SELECT * FROM users WHERE email = $1';
@@ -46,4 +41,4 @@ const update = async (id, updatedFields) => {
 
 
 
-export const userModel = {findUser, create, update, findByEmail }
+export const userModel = {create, update, findByEmail }

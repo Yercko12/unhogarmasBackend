@@ -6,6 +6,7 @@ import userRouter from './routes/users.routes.js';
 import requestRouter from './routes/request.routes.js';
 
 export const app = express(); //Export para que funcione Jest
+
 app.use(cors())
 app.use(express.json())
 app.use('/pets', petRouter)

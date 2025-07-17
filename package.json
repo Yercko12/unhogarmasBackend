@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-   "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "repository": {
     "dev": "nodemon index.js",
@@ -29,6 +29,7 @@
     "express": "^5.1.0",
     "jest": "^30.0.4",
     "jsonwebtoken": "^9.0.2",
+    "multer": "^2.0.1",
     "pg": "^8.16.3",
     "pg-format": "^1.0.4"
   },

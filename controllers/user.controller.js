@@ -10,7 +10,8 @@ const JWT_EXPIRES_IN = '1h';
 //Registro del usuario
 const register = async (req, res) => {
 
-    const { first_name, last_name, email, password, rut, photo } = req.body;
+    const { first_name, last_name, email, password, rut } = req.body;
+    const photo = req.file ? req.file.filename : null;
 
     if (!first_name || !last_name || !email || !rut || !password) {
         return res.status(400).json({ message: 'Todos los campos son requeridos' });
@@ -30,11 +31,17 @@ const register = async (req, res) => {
             last_name,
             email,
             rut,
-            photo,
-            password: hashedPassword
+            password: hashedPassword,
+            photo
         });
 
-        return res.status(201).json({ message: 'Usuario creado exitosamente', user: newUser });
+        const token = jwt.sign(
+            { id: newUser._id, email: newUser.email }, 
+            secret,
+            { expiresIn: '1h' } 
+        );
+
+        return res.status(201).json({ message: 'Usuario creado exitosamente', user: newUser, token });
     } catch (error) {
         console.error('Error en el register:', error);
         return res.status(500).json({
@@ -55,6 +62,7 @@ const login = async (req, res) => {
         const user = await userModel.findByEmail(email);
         if (!user) {
             return res.status(404).json({ message: 'Usuario no encontrado' });
+            
         }
 
         const validPassword = await bcrypt.compare(password, user.password);
@@ -64,36 +72,13 @@ const login = async (req, res) => {
 
         const token = jwt.sign({ id: user.id, email: user.email, role: user.userRole }, SECRET_KEY, { expiresIn: '2h' });
 
-        return res.json({ message: 'Login exitoso', token, user });
+        return res.json({ message: 'Login exitoso', token, user});
     } catch (err) {
         console.error(err);
         return res.status(500).json({ message: 'Error en el servidor' });
     }
 };
 
-
-//leer la informacion mediante el ID
-const getProfile = async (req, res) => {
-    const userId = req.user.id;
-
-    try {
-        const user = await userModel.findUser(userId);
-        if (!user) {
-            return res.status(404).json({ message: "No se pudo encontrar al usuario" });
-        }
-        const { first_name, last_name, email, rut } = user;
-
-        return res.status(200).json({
-            first_name,
-            last_name,
-            email,
-            rut
-        });
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: "Error en el servidor" });
-    }
-};
 
 
 //actualizar informacion del usuario 
@@ -121,7 +106,6 @@ const update = async (req, res) => {
 
 
 export const userController = {
-    getProfile,
     update,
     register,
     login,
