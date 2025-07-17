@@ -56,7 +56,6 @@ const readById = async (req, res) => {
 };
 
 
-//mostrar usuarios que el publico
 const readByUser = async (req, res) => {
   const userId = req.user.id;
 
@@ -71,9 +70,6 @@ const readByUser = async (req, res) => {
     return res.status(500).json({ message: 'Error al obtener mascotas del usuario' });
   }
 };
-
-
-
 
 
 //crear la mascota

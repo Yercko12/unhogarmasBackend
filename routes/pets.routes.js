@@ -8,11 +8,11 @@ const router = Router()
 //obtener todas las mascotas  
 router.get("/", petController.read);
 
-//Obtener mascotas por ID
-router.get("/:id", authOptionalMiddleware, petController.readById)
-
 //Obtener por medio del usuario
 router.get("/myPets", authMiddleware, petController.readByUser)
+
+//Obtener mascotas por ID
+router.get("/:id", authOptionalMiddleware, petController.readById)
 
 //Crear una mascota
 router.post("/", authMiddleware, petController.create)
