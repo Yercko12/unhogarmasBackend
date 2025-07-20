@@ -29,7 +29,7 @@ const update = async (id, updatedFields) => {
   if (fields.length === 0) return null; 
 
   const query = format(
-    'UPDATE users SET %s WHERE id = %L RETURNING id, first_name, last_name, email, rut',
+    'UPDATE users SET %s WHERE id = %L RETURNING id, first_name, last_name, email',
     fields.join(', '),
     id
   );
