@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 
 
 
-const SECRET_KEY = process.env.JWT_SECRET || 'clave_secreta';
+const SECRET_KEY = process.env.JWT_SECRET || 'unhogarmaspassword';
 const JWT_EXPIRES_IN = '1h';
 
 //Registro del usuario
@@ -37,7 +37,7 @@ const register = async (req, res) => {
 
         const token = jwt.sign(
             { id: newUser._id, email: newUser.email }, 
-            secret,
+            SECRET_KEY,
             { expiresIn: '1h' } 
         );
 
