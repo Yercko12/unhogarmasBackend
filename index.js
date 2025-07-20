@@ -9,7 +9,7 @@ export const app = express(); //Export para que funcione Jest
 
 app.use(cors())
 app.use(express.json())
-app.use('/pets', petRouter)
+app.use('/api/pets', petRouter);
 app.use('/users', userRouter)
 app.use('/request',requestRouter)
 const PORT = process.env.PORT || 5000;

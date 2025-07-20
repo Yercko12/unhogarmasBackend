@@ -36,9 +36,9 @@ const register = async (req, res) => {
         });
 
         const token = jwt.sign(
-            { id: newUser._id, email: newUser.email }, 
-            secret,
-            { expiresIn: '1h' } 
+            { id: newUser._id, email: newUser.email },
+            SECRET_KEY,
+            { expiresIn: JWT_EXPIRES_IN }
         );
 
         return res.status(201).json({ message: 'Usuario creado exitosamente', user: newUser, token });
@@ -62,7 +62,7 @@ const login = async (req, res) => {
         const user = await userModel.findByEmail(email);
         if (!user) {
             return res.status(404).json({ message: 'Usuario no encontrado' });
-            
+
         }
 
         const validPassword = await bcrypt.compare(password, user.password);
@@ -72,7 +72,7 @@ const login = async (req, res) => {
 
         const token = jwt.sign({ id: user.id, email: user.email, role: user.userRole }, SECRET_KEY, { expiresIn: '2h' });
 
-        return res.json({ message: 'Login exitoso', token, user});
+        return res.json({ message: 'Login exitoso', token, user });
     } catch (err) {
         console.error(err);
         return res.status(500).json({ message: 'Error en el servidor' });
