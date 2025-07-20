@@ -12,6 +12,7 @@ app.use(express.json())
 app.use('/pets', petRouter)
 app.use('/users', userRouter)
 app.use('/request',requestRouter)
+app.use('/uploads', express.static('uploads'));
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

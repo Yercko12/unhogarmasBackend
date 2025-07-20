@@ -32,7 +32,7 @@ const register = async (req, res) => {
             email,
             rut,
             password: hashedPassword,
-            photo
+            photo: photo ? `../uploads/${photo}` : null
         });
 
         const token = jwt.sign(
