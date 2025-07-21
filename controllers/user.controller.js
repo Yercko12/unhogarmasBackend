@@ -1,7 +1,7 @@
 import { userModel } from '../models/user.model.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-
+import { upload } from "../middlewares/upload.middleware.js";
 
 
 const SECRET_KEY = process.env.JWT_SECRET || 'unhogarmaspassword';
@@ -10,6 +10,8 @@ const JWT_EXPIRES_IN = '1h';
 //Registro del usuario
 const register = async (req, res) => {
 
+
+    
     const { first_name, last_name, email, password, rut } = req.body;
     const photo = req.file ? req.file.filename : null;
 
