@@ -1,7 +1,6 @@
 import { userController } from "../controllers/user.controller.js";
 import {authMiddleware} from "../middlewares/auth.middleware.js";
 import { Router } from "express";
-import multer from 'multer'
 import { upload } from "../middlewares/upload.middleware.js";
 
 
