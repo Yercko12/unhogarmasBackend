@@ -1,15 +1,17 @@
 import { userModel } from '../models/user.model.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { upload } from "../middlewares/upload.middleware.js";
 
 
-
-const SECRET_KEY = process.env.JWT_SECRET || 'clave_secreta';
+const SECRET_KEY = process.env.JWT_SECRET || 'unhogarmaspassword';
 const JWT_EXPIRES_IN = '1h';
 
 //Registro del usuario
 const register = async (req, res) => {
 
+
+    
     const { first_name, last_name, email, password, rut } = req.body;
     const photo = req.file ? req.file.filename : null;
 
@@ -32,13 +34,13 @@ const register = async (req, res) => {
             email,
             rut,
             password: hashedPassword,
-            photo
+            photo: photo ? `../uploads/${photo}` : null
         });
 
         const token = jwt.sign(
-            { id: newUser._id, email: newUser.email },
+            { id: newUser._id, email: newUser.email }, 
             SECRET_KEY,
-            { expiresIn: JWT_EXPIRES_IN }
+            { expiresIn: '1h' } 
         );
 
         return res.status(201).json({ message: 'Usuario creado exitosamente', user: newUser, token });
