@@ -64,7 +64,7 @@ const login = async (req, res) => {
         const user = await userModel.findByEmail(email);
         if (!user) {
             return res.status(404).json({ message: 'Usuario no encontrado' });
-            
+
         }
 
         const validPassword = await bcrypt.compare(password, user.password);
@@ -74,7 +74,7 @@ const login = async (req, res) => {
 
         const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, SECRET_KEY, { expiresIn: '2h' });
 
-        return res.json({ message: 'Login exitoso', token, user});
+        return res.json({ message: 'Login exitoso', token, user });
     } catch (err) {
         console.error(err);
         return res.status(500).json({ message: 'Error en el servidor' });
