@@ -7,11 +7,11 @@ import requestRouter from './routes/request.routes.js';
 
 export const app = express(); //Export para que funcione Jest
 
-app.use(cors())
+app.use(cors({}));
 app.use(express.json())
 app.use('/pets', petRouter);
 app.use('/users', userRouter)
-app.use('/request',requestRouter)
+app.use('/request', requestRouter)
 app.use('/uploads', express.static('uploads'));
 
 
@@ -31,5 +31,5 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
- console.log(`Escuchando puerto ${PORT}`);
- });
+  console.log(`Escuchando puerto ${PORT}`);
+});

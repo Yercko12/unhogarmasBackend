@@ -1,11 +1,12 @@
 import { petModel } from "../models/pet.model.js";
+import { upload } from "../middlewares/upload.middleware.js";
 
 const BASE_URL =
   process.env.NODE_ENV === 'production'
     ? process.env.DOMAIN_URL_APP
     : `http://localhost:${process.env.PORT}`;
 
-    
+
 const read = async (req, res) => {
   try {
     const { page = 1, species, size, age } = req.query;
@@ -74,10 +75,11 @@ const readByUser = async (req, res) => {
 
 //crear la mascota
 const create = async (req, res) => {
-  const { name, specie, weight, age, gender, chip, photo, description } = req.body;
+  const { name, specie, weight, age, gender, chip, description } = req.body;
+     const photo = req.file ? req.file.filename : null;
 
   if (!name || !specie || !weight || !age || !gender || !chip || !photo || !description) {
-    return res.status(400).json({ message: "Faltan campos requeridos" });
+    return res.status(400).json({ message: "Faltan campos requeridos" });  
   }
 
   const petData = {
@@ -87,16 +89,17 @@ const create = async (req, res) => {
     age,
     gender,
     chip,
-    photo,
+    photo: photo ? `../uploads/${photo}` : null,
+    description,
   };
 
   try {
-    newPet = await petModel.create(petData, req.user.id);
-    return res.status(201).json(createdPet);
+   const newPet = await petModel.create(petData, req.user.id);
+    return res.status(201).json(newPet);;
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ message: "Error en el servidor" });
   }
+  
 };
 
 const update = async (req, res) => {
@@ -134,7 +137,7 @@ const remove = async (req, res) => {
   const petId = req.params.id;
   const userId = req.user.id;
 
-try {
+  try {
     // Verificar si la mascota existe
     const pet = await petModel.findById(petId);
     if (!pet) {
