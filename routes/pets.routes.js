@@ -4,6 +4,7 @@ import { petController } from "../controllers/pet.controller.js";
 import { Router } from "express";
 import { upload } from "../middlewares/upload.middleware.js";
 
+
 const router = Router()
 
 //obtener todas las mascotas  
@@ -16,7 +17,7 @@ router.get("/myPets", authMiddleware, petController.readByUser)
 router.get("/:id", authOptionalMiddleware, petController.readById)
 
 //Crear una mascota
-router.post("/", authMiddleware, upload.single('photo'), petController.create)
+router.post("/", authMiddleware,  upload.single('photo'), petController.create)
 
 //actualizar mascotas   
 router.patch('/:id', authMiddleware, petController.update);

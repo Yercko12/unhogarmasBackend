@@ -4,7 +4,7 @@ import { requestModel } from "../models/request.model.js";
 const findRequest = async (req, res) => {
   const userRole = req.user.role; // Asignado por authMiddleware
 
-  if (userRole !== 'admin') {
+  if (userRole !== 'administrador') {
     return res.status(403).json({ message: 'Acceso denegado: solo el administrador puede ver solicitudes' });
   }
 
