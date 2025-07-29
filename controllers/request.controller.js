@@ -12,8 +12,8 @@ const findRequest = async (req, res) => {
     const requests = await requestModel.findAllRequest();
     return res.status(200).json({ results: requests });
   } catch (error) {
-    console.error('Error al obtener solicitudes:', error);
-    return res.status(500).json({ message: 'Error en el servidor' });
+     console.error('ERROR AL OBTENER SOLICITUDES:', error);
+  return res.status(500).json({ message: 'Error en el servidor', detalle: error.message });
   }
 };
 
@@ -60,7 +60,7 @@ const updateStatus = async (req, res) => {
   const userRole = req.user.role;
   const { id } = req.params;
   const { status } = req.body;
-  if (userRole !== 'admin') {
+  if (userRole !== 'administrador') {
     return res.status(403).json({ message: 'Solo el administrador puede modificar el estado de una solicitud' });
   }
 
@@ -93,7 +93,7 @@ const deleteRequest = async (req, res) => {
   const userRole = req.user.role;
   const { id } = req.params;
 
-  if (userRole !== 'admin') {
+  if (userRole !== 'administrador') {
     return res.status(403).json({ message: 'Acceso denegado: solo el administrador puede eliminar solicitudes' });
   }
 
