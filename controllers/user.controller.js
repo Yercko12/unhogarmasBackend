@@ -38,7 +38,7 @@ const register = async (req, res) => {
         });
 
         const token = jwt.sign(
-            { id: newUser._id, email: newUser.email, role: user.role }, 
+            { id: newUser._id, email: newUser.email, role: newUser.role }, 
             SECRET_KEY,
             { expiresIn: '1h' } 
         );
