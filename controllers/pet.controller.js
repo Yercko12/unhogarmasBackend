@@ -77,6 +77,7 @@ const readByUser = async (req, res) => {
 const create = async (req, res) => {
   const { name, specie, weight, age, gender, chip, description } = req.body;
      const photo = req.file ? req.file.filename : null;
+     const userId =  req.user.id
 
   if (!name || !specie || !weight || !age || !gender || !chip || !photo || !description) {
     return res.status(400).json({ message: "Faltan campos requeridos" });  
@@ -94,7 +95,7 @@ const create = async (req, res) => {
   };
 
   try {
-   const newPet = await petModel.create(petData, req.user.id);
+   const newPet = await petModel.create(petData, userId);
     return res.status(201).json(newPet);;
   } catch (error) {
     return res.status(500).json({ message: "Error en el servidor" });
