@@ -8,7 +8,7 @@ import { upload } from "../middlewares/upload.middleware.js";
 const router = Router()
 
 //obtener todas las mascotas  
-router.get("/", petController.read);
+router.get("/", authOptionalMiddleware, petController.read);
 
 //Obtener por medio del usuario
 router.get("/myPets", authMiddleware, petController.readByUser)
