@@ -1,5 +1,6 @@
 import { petModel } from "../models/pet.model.js";
 import { upload } from "../middlewares/upload.middleware.js";
+import fs from 'fs/promises'
 
 const BASE_URL =
   process.env.NODE_ENV === 'production'
@@ -76,11 +77,11 @@ const readByUser = async (req, res) => {
 //crear la mascota
 const create = async (req, res) => {
   const { name, specie, weight, age, gender, chip, description } = req.body;
-     const photo = req.file ? req.file.filename : null;
-     const userId =  req.user.id
+  const photo = req.file ? req.file.filename : null;
+  const userId = req.user.id
 
   if (!name || !specie || !weight || !age || !gender || !chip || !photo || !description) {
-    return res.status(400).json({ message: "Faltan campos requeridos" });  
+    return res.status(400).json({ message: "Faltan campos requeridos" });
   }
 
   const petData = {
@@ -95,12 +96,12 @@ const create = async (req, res) => {
   };
 
   try {
-   const newPet = await petModel.create(petData, userId);
+    const newPet = await petModel.create(petData, userId);
     return res.status(201).json(newPet);;
   } catch (error) {
     return res.status(500).json({ message: "Error en el servidor" });
   }
-  
+
 };
 
 const update = async (req, res) => {
@@ -136,7 +137,7 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   const petId = req.params.id;
-   const userRole = req.user.role;
+  const userRole = req.user.role;
 
   try {
     // Verificar si la mascota existe
@@ -148,6 +149,15 @@ const remove = async (req, res) => {
     // Verificar si el usuario es el dueño
     if (userRole !== "administrador") {
       return res.status(403).json({ message: 'No tienes permiso para eliminar esta publicación' });
+    }
+
+    try {
+      
+      const filePath = `../uploads/${pet.photo}`;
+      await fs.unlink(filePath);
+      console.log(`Foto eliminada: ${pet.photo}`);
+    } catch (error) {
+      console.error('Error al eliminar la foto:', error.message);
     }
 
     // Eliminar la mascota
