@@ -136,7 +136,7 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   const petId = req.params.id;
-  const userId = req.user.id;
+   const userRole = req.user.role;
 
   try {
     // Verificar si la mascota existe
@@ -146,7 +146,7 @@ const remove = async (req, res) => {
     }
 
     // Verificar si el usuario es el dueño
-    if (pet.author_post !== userId) {
+    if (userRole !== "administrador") {
       return res.status(403).json({ message: 'No tienes permiso para eliminar esta publicación' });
     }
 
