@@ -139,6 +139,8 @@ const remove = async (req, res) => {
   const petId = req.params.id;
   const userRole = req.user.role;
 
+  console.log('Petición DELETE recibida para ID:', petId);
+
   try {
     // Verificar si la mascota existe
     const pet = await petModel.findById(petId);
