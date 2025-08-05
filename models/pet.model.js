@@ -11,13 +11,13 @@ const findAllPets = async ({ limit = 8, page = 1, species, size, age }) => {
   let countQuery = 'SELECT COUNT(*) FROM pets WHERE true';
   const countConditions = [];
 
-  if (species) countConditions.push(format('species = %L', species));
-  if (size === '1kg-5kg') countConditions.push('weight BETWEEN 1 AND 5');
-  if (size === '5kg-10kg') countConditions.push('weight BETWEEN 5 AND 10');
-  if (size === '+10kg') countConditions.push('weight > 10');
-  if (age === 'menos de 1 año') countConditions.push('age < 1');
-  if (age === '1 a 3 años') countConditions.push('age BETWEEN 1 AND 3');
-  if (age === 'más de 4 años') countConditions.push('age > 4');
+  if (species) countConditions.push(format('specie = %L', species));
+  if (size === '800gr-4kg') countConditions.push('weight BETWEEN 0.8 AND 4');
+  if (size === '5kg-9kg') countConditions.push('weight BETWEEN 5 AND 9');
+  if (size === '+10kg') countConditions.push('weight >= 10');
+  if (age === '-1a') countConditions.push('age < 1');
+  if (age === '1-3a') countConditions.push('age BETWEEN 1 AND 3');
+  if (age === '+4a') countConditions.push('age > 4');
 
   if (countConditions.length > 0) {
     countQuery += ' AND ' + countConditions.join(' AND ');
@@ -37,6 +37,7 @@ const findAllPets = async ({ limit = 8, page = 1, species, size, age }) => {
   }
 
   query += format(' ORDER BY created_at DESC LIMIT %L OFFSET %L', limit, offset);
+
   const { rows } = await pool.query(query);
 
 
@@ -85,7 +86,7 @@ const remove = async (id) => {
 }
 
 const update = async (id, userId, updateData) => {
-  const query = "UPDATE pets SET name = $1, breed = $2, age = $3, weight = $4, gender = $5, chip = $6, photo = $7, description = $8 WHERE id = $9 AND author_post = $10 RETURNING *";
+  const query = "UPDATE pets SET name = $1, specie = $2, age = $3, weight = $4, gender = $5, chip = $6, photo = $7, description = $8 WHERE id = $9 AND author_post = $10 RETURNING *";
 
   const values = [
     updateData.name,

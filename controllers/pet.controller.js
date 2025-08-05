@@ -12,7 +12,6 @@ const read = async (req, res) => {
     const { page = 1, species, size, age } = req.query;
     const isPageValid = /^[1-9]\d*$/.test(page);
     const filters = { page: Number(page), };
-
     if (species) filters.species = species;
     if (size) filters.size = size;
     if (age) filters.age = age;
@@ -76,18 +75,18 @@ const readByUser = async (req, res) => {
 //crear la mascota
 const create = async (req, res) => {
   const { name, specie, weight, age, gender, chip, description } = req.body;
-     const photo = req.file ? req.file.filename : null;
-     const userId =  req.user.id
+  const photo = req.file ? req.file.filename : null;
+  const userId = req.user.id
 
   if (!name || !specie || !weight || !age || !gender || !chip || !photo || !description) {
-    return res.status(400).json({ message: "Faltan campos requeridos" });  
+    return res.status(400).json({ message: "Faltan campos requeridos" });
   }
 
   const petData = {
     name,
     specie,
-    weight,
-    age,
+    weight: Number(weight),
+    age: Number(age),
     gender,
     chip,
     photo: photo ? `../uploads/${photo}` : null,
@@ -95,12 +94,12 @@ const create = async (req, res) => {
   };
 
   try {
-   const newPet = await petModel.create(petData, userId);
+    const newPet = await petModel.create(petData, userId);
     return res.status(201).json(newPet);;
   } catch (error) {
-    return res.status(500).json({ message: "Error en el servidor" });
+    return res.status(500).json({ message: "Errorx en el servidor" });
   }
-  
+
 };
 
 const update = async (req, res) => {
