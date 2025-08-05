@@ -1,5 +1,6 @@
 import { petModel } from "../models/pet.model.js";
 import { upload } from "../middlewares/upload.middleware.js";
+import fs from 'fs/promises'
 
 const BASE_URL =
   process.env.NODE_ENV === 'production'
@@ -135,7 +136,9 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   const petId = req.params.id;
-  const userId = req.user.id;
+  const userRole = req.user.role;
+
+  console.log('Petición DELETE recibida para ID:', petId);
 
   try {
     // Verificar si la mascota existe
@@ -145,8 +148,17 @@ const remove = async (req, res) => {
     }
 
     // Verificar si el usuario es el dueño
-    if (pet.author_post !== userId) {
+    if (userRole !== "administrador") {
       return res.status(403).json({ message: 'No tienes permiso para eliminar esta publicación' });
+    }
+
+    try {
+      
+      const filePath = `../uploads/${pet.photo}`;
+      await fs.unlink(filePath);
+      console.log(`Foto eliminada: ${pet.photo}`);
+    } catch (error) {
+      console.error('Error al eliminar la foto:', error.message);
     }
 
     // Eliminar la mascota
