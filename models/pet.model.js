@@ -6,12 +6,11 @@ const BASE_URL =
     ? process.env.DOMAIN_URL_APP
     : `http://localhost:${process.env.PORT}`;
 
-const findAllPets = async ({ limit = 8, page = 1, species, size, age }) => {
-
+const findAllPets = async ({ limit = 8, page = 1, specie, size, age }) => {
   let countQuery = 'SELECT COUNT(*) FROM pets WHERE true';
   const countConditions = [];
 
-  if (species) countConditions.push(format('specie = %L', species));
+  if (specie) countConditions.push(format('specie = %L', specie));
   if (size === '800gr-4kg') countConditions.push('weight BETWEEN 0.8 AND 4');
   if (size === '5kg-9kg') countConditions.push('weight BETWEEN 5 AND 9');
   if (size === '+10kg') countConditions.push('weight >= 10');
@@ -23,6 +22,7 @@ const findAllPets = async ({ limit = 8, page = 1, species, size, age }) => {
     countQuery += ' AND ' + countConditions.join(' AND ');
   }
 
+ 
   const { rows: countResult } = await pool.query(countQuery);
   const total_rows = parseInt(countResult[0].count, 10);
   const total_pages = Math.ceil(total_rows / limit);
